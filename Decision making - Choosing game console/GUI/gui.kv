@@ -1,0 +1,187 @@
+WindowManager:
+    WelcomeScreen:
+    MainScreen:
+    SettingsScreen:
+
+
+<WelcomeScreen>
+    name: "welcome_screen"
+
+    canvas.before:
+        Color:
+            rgba: (0.2,0.37,0.47,1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    FloatLayout:
+        size: root.width, root.height
+        Label:
+            pos_hint:{"x":0,"y":0.2}
+            font_size:35
+            color: 1,1,1
+            text:"Którą konsolę kupić? Quiz? \nQuestionnaire? Wtf is this"
+        GridLayout:
+            pos_hint:{"x":0.3,"y":0.4}
+            size_hint:(0.4,0.15)
+            cols:1
+            Button:
+                background_color: (0.47,0.3,0.2,1)
+                color: (1,1,1,1)
+                text:"Idk bro"
+                on_press:
+                    app.root.current = "main_screen"
+                    root.manager.transition.direction = "left"
+
+        GridLayout:
+            pos_hint:{"x":0.895, "y":0.885}
+            size_hint_x: 0.1
+            size_hint_y: 0.1
+            cols:1
+            Button:
+                size_hint_y: None
+                height: self.width
+                border: (0,0,0,0)
+                background_color: (0.47,0.3,0.2,1)
+                color: (1,1,1,1)
+                background_normal: 'Images/settings.png'
+                background_down: 'Images/settings.png'
+                on_press:
+                    root.manager.last_screen = "welcome_screen"
+                    app.root.current = "settings_screen"
+                    root.manager.transition.direction = "down"
+
+        GridLayout:
+            pos_hint:{"x":0.005, "y":0.885}
+            size_hint_x: 0.1
+            size_hint_y: 0.1
+            cols:1
+            Button:
+                id: screen_mode_button
+                size_hint_y: None
+                height: self.width
+                border: (0,0,0,0)
+                background_color: (0.47,0.3,0.2,1)
+                color: (1,1,1,1)
+                background_normal: root.manager.screen_mode_change_image_link
+                background_down: root.manager.screen_mode_change_image_link
+                on_press:
+                    root.manager.screen_mode_change()
+
+<MainScreen>
+    name: "main_screen"
+
+    canvas.before:
+        Color:
+            rgba: (0.2,0.37,0.47,1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    FloatLayout:
+        size: root.width, root.height
+        Label:
+            pos_hint:{"x":0,"y":0.2}
+            font_size:35
+            color: 1,1,1
+            text:"PLACEHOLDER MAIN MENU OR SMTH IDK"
+
+        GridLayout:
+            pos_hint:{"x":0.3,"y":0.4}
+            size_hint:(0.4,0.15)
+            cols:1
+            Button:
+                background_color: (0.47,0.3,0.2,1)
+                color: (1,1,1,1)
+                text:"Idk bro"
+                on_press:
+                    app.root.current = "welcome_screen"
+                    root.manager.transition.direction = "right"
+
+        GridLayout:
+            pos_hint:{"x":0.895, "y":0.885}
+            size_hint_x: 0.1
+            size_hint_y: 0.1
+            cols:1
+            Button:
+                size_hint_y: None
+                height: self.width
+                border: (0,0,0,0)
+                background_color: (0.47,0.3,0.2,1)
+                color: (1,1,1,1)
+                background_normal: 'Images/settings.png'
+                background_down: 'Images/settings.png'
+                on_press:
+                    root.manager.last_screen = "main_screen"
+                    app.root.current = "settings_screen"
+                    root.manager.transition.direction = "down"
+
+        GridLayout:
+            pos_hint:{"x":0.005, "y":0.885}
+            size_hint_x: 0.1
+            size_hint_y: 0.1
+            cols:1
+            Button:
+                id: screen_mode_button
+                size_hint_y: None
+                height: self.width
+                border: (0,0,0,0)
+                background_color: (0.47,0.3,0.2,1)
+                color: (1,1,1,1)
+                background_normal: root.manager.screen_mode_change_image_link
+                background_down: root.manager.screen_mode_change_image_link
+                on_press:
+                    root.manager.screen_mode_change()
+
+
+<SettingsScreen>
+    name: "settings_screen"
+
+    canvas.before:
+        Color:
+            rgba: (0.2,0.37,0.47,1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    FloatLayout:
+        size: root.width, root.height
+        Label:
+            pos_hint:{"x":0,"y":0.2}
+            font_size:35
+            color: 1,1,1
+            text:"PLACEHOLDER SETTINGS"
+
+        GridLayout:
+            pos_hint:{"x":0.895, "y":0.885}
+            size_hint_x: 0.1
+            size_hint_y: 0.1
+            cols:1
+            Button:
+                size_hint_y: None
+                height: self.width
+                border: (0,0,0,0)
+                background_color: (0.47,0.3,0.2,1)
+                color: (1,1,1,1)
+                background_normal: 'Images/settings.png'
+                background_down: 'Images/settings.png'
+                on_press:
+                    app.root.current = root.manager.last_screen
+                    root.manager.transition.direction = "up"
+
+        GridLayout:
+            pos_hint:{"x":0.005, "y":0.885}
+            size_hint_x: 0.1
+            size_hint_y: 0.1
+            cols:1
+            Button:
+                id: screen_mode_button
+                size_hint_y: None
+                height: self.width
+                border: (0,0,0,0)
+                background_color: (0.47,0.3,0.2,1)
+                color: (1,1,1,1)
+                background_normal: root.manager.screen_mode_change_image_link
+                background_down: root.manager.screen_mode_change_image_link
+                on_press:
+                    root.manager.screen_mode_change()
