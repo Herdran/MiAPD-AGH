@@ -14,7 +14,7 @@ class Comparision_builder:
     def __init__(self, add_to_model: Callable[[Comparision_Matrix_type], AHP_model|AHP_complete_model], matrix_labels: list[str]):
         self.add_to_model = add_to_model
 
-        get_initial_value = lambda inner, outer: 1.0 if inner == outer else Comparision_builder.UNINITRIALIZED_MATRIX_VALUE
+        get_initial_value = lambda inner, outer: 1.0 if inner == outer else self.UNINITRIALIZED_MATRIX_VALUE
         self.matrix = {outer:{inner: get_initial_value(inner, outer) for inner in matrix_labels} for outer in matrix_labels}
         
     def compare(self, first: str, second: str, value: int) -> Comparision_builder|AHP_model|AHP_complete_model:
@@ -32,9 +32,7 @@ class Comparision_builder:
         return self
 
     def __is_finished(self) -> bool:
-        all_values_view = map(lambda inner: inner.values(), self.matrix.values())
-        return all(value != self.UNINITRIALIZED_MATRIX_VALUE for value in all_values_view)
-        
+        return all(all(value != self.UNINITRIALIZED_MATRIX_VALUE for value in inner.values()) for inner in self.matrix.values())
 
 class Cryteria_comparision_builder(Comparision_builder):
     def __init__(self, model: AHP_model):
@@ -118,7 +116,7 @@ class AHP_builder:
 
 class TestAHP(unittest.TestCase):
 
-    def test_basic(self):
+    def test_basic_example(self):
         ahp_result = (
             AHP_builder()
             .add_alternative("A")
@@ -137,6 +135,46 @@ class TestAHP(unittest.TestCase):
 
         print(ahp_result)
 
+    def test_wikipedia_leader(self):
+        ahp_result = (
+            AHP_builder()
+            .add_alternative("Tom")
+            .add_alternative("Dick")
+            .add_alternative("Harry")
+            .add_criteria("Experience")
+            .add_criteria("Education")
+            .add_criteria("Charisma")
+            .add_criteria("Age")
+            .build()
+            .build_alternatives_comparision("Experience")
+            .compare("Dick", "Tom", 4)
+            .compare("Tom", "Harry", 4)
+            .compare("Dick", "Harry", 9)
+            .build_alternatives_comparision("Education")
+            .compare("Tom", "Dick", 3)
+            .compare("Harry", "Tom", 5)
+            .compare("Harry", "Dick", 7)
+            .build_alternatives_comparision("Charisma")
+            .compare("Tom", "Dick", 5)
+            .compare("Tom", "Harry", 9)
+            .compare("Dick", "Harry", 4)
+            .build_alternatives_comparision("Age")
+            .compare("Dick", "Tom", 3)
+            .compare("Tom", "Harry", 5)
+            .compare("Dick", "Harry", 9)
+            .build_cryteria_comparision()
+            .compare("Experience", "Education", 4)
+            .compare("Experience", "Charisma", 3)
+            .compare("Experience", "Age", 7)
+            .compare("Education", "Age", 3)
+            .compare("Charisma", "Education", 3)
+            .compare("Charisma", "Age", 5)
+            .calculate()
+        )
+
+
+        ranking = [k for k, _ in sorted(ahp_result.items(), key=lambda item: item[1], reverse=True)]
+        self.assertEqual(ranking, ["Dick", "Tom", "Harry"])
 
 
 if __name__ == '__main__':
