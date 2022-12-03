@@ -8,10 +8,11 @@ from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy.uix.scrollview import ScrollView
 from kivymd.app import MDApp
 from kivymd.uix.list import MDList, OneLineListItem
+import os
 
 Config.set('input', 'mouse', 'mouse,disable_multitouch')
 
-file_path = str(pathlib.Path(__file__).parent.resolve()) + "\\"
+file_path = str(pathlib.Path(__file__).parent.resolve())
 
 
 class WelcomeScreen(Screen):
@@ -43,28 +44,29 @@ class SettingsScreen(Screen):
 
 
 class WindowManager(ScreenManager):
-    screen_mode_change_image_link = StringProperty(file_path + "Images/fullscreen_maximize.png")
-    settings_icon_link = StringProperty(file_path + "Images/settings.png")
-    return_icon_link = StringProperty(file_path + "Images/return.png")
-    skip_icon_link = StringProperty(file_path + "Images/next.png")
+    images_path = os.path.join(file_path, "Images")
+    screen_mode_change_image_link = StringProperty(os.path.join(images_path, "fullscreen_maximize.png"))
+    settings_icon_link = StringProperty(os.path.join(images_path, "settings.png"))
+    return_icon_link = StringProperty(os.path.join(images_path, "return.png"))
+    skip_icon_link = StringProperty(os.path.join(images_path, "next.png"))
     last_screen = "welcome_screen"
 
     def screen_mode_change(self):
         if Window.fullscreen:
             Window.fullscreen = False
-            self.screen_mode_change_image_link = file_path + "Images/fullscreen_maximize.png"
+            self.screen_mode_change_image_link = os.path.join(self.images_path, "fullscreen_maximize.png")
         else:
             Window.fullscreen = "auto"
-            self.screen_mode_change_image_link = file_path + "Images/fullscreen_minimalize.png"
+            self.screen_mode_change_image_link = os.path.join(self.images_path, "fullscreen_minimalize.png")
 
 
 class Gui(MDApp):
     def build(self):
         Window.minimum_width = 640
         Window.minimum_height = 360
-        self.icon = file_path + "Images/logo_maybe.png"
+        self.icon = file_path + "Images//logo_maybe.png"
         self.title = "Decision making - Choosing game console"
-        return Builder.load_file(file_path + "gui.kv")
+        return Builder.load_file(os.path.join(file_path, "gui.kv"))
 
 # if __name__ == "__main__":
 #     Gui().run()
