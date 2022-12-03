@@ -48,6 +48,13 @@ WindowManager:
             color: 1,1,1
             text:"Którą konsolę kupić? Quiz? \nQuestionnaire? Wtf is this"
 
+        Label:
+            pos_hint:{"x":0.4,"y":0.83}
+            size_hint:(0.2,0.15)
+            font_size:35
+            color: 1,1,1
+            text:"Sugestator 3000"
+
         grid_layout_generic:
             Button:
                 background_color: (0.47,0.3,0.2,1)
@@ -102,6 +109,20 @@ WindowManager:
             color: 1,1,1
             text:"Question? Maybe some additional\n info somewhere to help?"
 
+        Label:
+            pos_hint:{"x":0.4,"y":0.83}
+            size_hint:(0.2,0.15)
+            font_size:35
+            color: 1,1,1
+            text:"Sugestator 3000"
+
+        Label:
+            pos_hint:{"x":0.4,"y":0.0}
+            size_hint:(0.2,0.15)
+            font_size:35
+            color: 1,1,1
+            text:"Maybe progress bar?"
+
         GridLayout:
             pos_hint:{"x":0.2,"y":0.4}
             size_hint:(0.25,0.15)
@@ -120,7 +141,7 @@ WindowManager:
             Button:
                 background_color: (0.47,0.3,0.2,1)
                 color: (1,1,1,1)
-                text:"Prawa opcja? Maybe even more,\n like depends on the question"
+                text:"Prawa opcja? Maybe even\n more, like, depends\n on the question"
                 on_press:
                     app.root.current = "main_screen"
 #            Button:
@@ -188,12 +209,6 @@ WindowManager:
                 background_down: root.manager.skip_icon_link
                 on_press:
                     print("skipped a question")
-        Label:
-            pos_hint:{"x":0.4,"y":0.0}
-            size_hint:(0.2,0.15)
-            font_size:35
-            color: 1,1,1
-            text:"Maybe progress bar?"
 
 <SettingsScreen>
     name: "settings_screen"
