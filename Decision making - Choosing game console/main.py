@@ -1,1 +1,5 @@
-print("Hello World")
+from GUI.gui import Gui
+
+
+if __name__ == "__main__":
+    Gui().run()

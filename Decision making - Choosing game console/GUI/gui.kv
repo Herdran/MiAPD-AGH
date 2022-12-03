@@ -1,61 +1,77 @@
+#: import WipeTransition kivy.uix.screenmanager.WipeTransition
+
 WindowManager:
+    transition: WipeTransition()
     WelcomeScreen:
     MainScreen:
     SettingsScreen:
 
+<grid_layout_generic@GridLayout>
+    pos_hint:{"x":0.3,"y":0.4}
+    size_hint:(0.4,0.15)
+    cols:1
+
+<grid_layout_settings@GridLayout>
+    pos_hint:{"x":0.895, "y":0.885}
+    size_hint:(0.1, 0.1)
+    cols:1
+
+<grid_layout_fullscreen@GridLayout>
+    pos_hint:{"x":0.005, "y":0.885}
+    size_hint:(0.1, 0.1)
+    cols:1
+
+<grid_layout_return@GridLayout>
+    pos_hint:{"x":0.005, "y":0.075}
+    size_hint:(0.1, 0.1)
+    cols:1
+
+<grid_layout_skip@GridLayout>
+    pos_hint:{"x":0.895, "y":0.095}
+    size_hint:(0.1, 0.1)
+    cols:1
 
 <WelcomeScreen>
     name: "welcome_screen"
 
-    canvas.before:
-        Color:
-            rgba: (0.2,0.37,0.47,1)
-        Rectangle:
-            pos: self.pos
-            size: self.size
-
     FloatLayout:
         size: root.width, root.height
+        canvas.before:
+            Color:
+                rgba: (0.2,0.37,0.47,1)
+            Rectangle:
+                pos: self.pos
+                size: self.size
         Label:
             pos_hint:{"x":0,"y":0.2}
             font_size:35
             color: 1,1,1
             text:"Którą konsolę kupić? Quiz? \nQuestionnaire? Wtf is this"
-        GridLayout:
-            pos_hint:{"x":0.3,"y":0.4}
-            size_hint:(0.4,0.15)
-            cols:1
+
+        grid_layout_generic:
             Button:
                 background_color: (0.47,0.3,0.2,1)
                 color: (1,1,1,1)
                 text:"Idk bro"
                 on_press:
                     app.root.current = "main_screen"
-                    root.manager.transition.direction = "left"
+#                    root.manager.transition.direction = "left"
 
-        GridLayout:
-            pos_hint:{"x":0.895, "y":0.885}
-            size_hint_x: 0.1
-            size_hint_y: 0.1
-            cols:1
+        grid_layout_settings:
             Button:
                 size_hint_y: None
                 height: self.width
                 border: (0,0,0,0)
                 background_color: (0.47,0.3,0.2,1)
                 color: (1,1,1,1)
-                background_normal: 'Images/settings.png'
-                background_down: 'Images/settings.png'
+                background_normal: root.manager.settings_icon_link
+                background_down: root.manager.settings_icon_link
                 on_press:
                     root.manager.last_screen = "welcome_screen"
                     app.root.current = "settings_screen"
-                    root.manager.transition.direction = "down"
+#                    root.manager.transition.direction = "down"
 
-        GridLayout:
-            pos_hint:{"x":0.005, "y":0.885}
-            size_hint_x: 0.1
-            size_hint_y: 0.1
-            cols:1
+        grid_layout_fullscreen:
             Button:
                 id: screen_mode_button
                 size_hint_y: None
@@ -84,43 +100,58 @@ WindowManager:
             pos_hint:{"x":0,"y":0.2}
             font_size:35
             color: 1,1,1
-            text:"PLACEHOLDER MAIN MENU OR SMTH IDK"
+            text:"Question? Maybe some additional\n info somewhere to help?"
 
         GridLayout:
-            pos_hint:{"x":0.3,"y":0.4}
-            size_hint:(0.4,0.15)
+            pos_hint:{"x":0.2,"y":0.4}
+            size_hint:(0.25,0.15)
             cols:1
             Button:
                 background_color: (0.47,0.3,0.2,1)
                 color: (1,1,1,1)
-                text:"Idk bro"
+                text:"Lewa opcja?"
                 on_press:
-                    app.root.current = "welcome_screen"
-                    root.manager.transition.direction = "right"
+                    app.root.current = "main_screen"
 
         GridLayout:
-            pos_hint:{"x":0.895, "y":0.885}
-            size_hint_x: 0.1
-            size_hint_y: 0.1
+            pos_hint:{"x":0.55,"y":0.4}
+            size_hint:(0.25,0.15)
             cols:1
+            Button:
+                background_color: (0.47,0.3,0.2,1)
+                color: (1,1,1,1)
+                text:"Prawa opcja? Maybe even more,\n like depends on the question"
+                on_press:
+                    app.root.current = "main_screen"
+#            Button:
+#                pos_hint:{"x":0.6}
+#                size_hint_x: 0.4
+#                background_color: (0.47,0.3,0.2,1)
+#                color: (1,1,1,1)
+#                text:"Prawa opcja? Maybe even more, like depends on the question"
+#                on_press:
+#                    app.root.current = "main_screen"
+
+
+#        grid_layout_return
+#        Why isn't it possible, WHY?
+
+
+        grid_layout_settings:
             Button:
                 size_hint_y: None
                 height: self.width
                 border: (0,0,0,0)
                 background_color: (0.47,0.3,0.2,1)
                 color: (1,1,1,1)
-                background_normal: 'Images/settings.png'
-                background_down: 'Images/settings.png'
+                background_normal: root.manager.settings_icon_link
+                background_down: root.manager.settings_icon_link
                 on_press:
                     root.manager.last_screen = "main_screen"
                     app.root.current = "settings_screen"
-                    root.manager.transition.direction = "down"
+#                    root.manager.transition.direction = "down"
 
-        GridLayout:
-            pos_hint:{"x":0.005, "y":0.885}
-            size_hint_x: 0.1
-            size_hint_y: 0.1
-            cols:1
+        grid_layout_fullscreen:
             Button:
                 id: screen_mode_button
                 size_hint_y: None
@@ -133,6 +164,36 @@ WindowManager:
                 on_press:
                     root.manager.screen_mode_change()
 
+        grid_layout_return:
+            Button:
+                size_hint_y: None
+                height: self.width
+                border: (0,0,0,0)
+                background_color: (0.47,0.3,0.2,1)
+                color: (1,1,1,1)
+                background_normal: root.manager.return_icon_link
+                background_down: root.manager.return_icon_link
+                on_press:
+                    app.root.current = "welcome_screen"
+#                    root.manager.transition.direction = "right"
+
+        grid_layout_skip:
+            Button:
+                size_hint_y: None
+                height: self.width
+                border: (0,0,0,0)
+                background_color: (0.47,0.3,0.2,1)
+                color: (1,1,1,1)
+                background_normal: root.manager.skip_icon_link
+                background_down: root.manager.skip_icon_link
+                on_press:
+                    print("skipped a question")
+        Label:
+            pos_hint:{"x":0.4,"y":0.0}
+            size_hint:(0.2,0.15)
+            font_size:35
+            color: 1,1,1
+            text:"Maybe progress bar?"
 
 <SettingsScreen>
     name: "settings_screen"
@@ -146,16 +207,17 @@ WindowManager:
 
     FloatLayout:
         size: root.width, root.height
-        Label:
-            pos_hint:{"x":0,"y":0.2}
-            font_size:35
-            color: 1,1,1
-            text:"PLACEHOLDER SETTINGS"
+#        Label:
+#            pos_hint:{"x":0,"y":0.2}
+#            font_size:35
+#            color: 1,1,1
+#            text:"PLACEHOLDER SETTINGS"
 
+#        grid_layout_settings
+#        Why isn't it possible, WHY?
         GridLayout:
             pos_hint:{"x":0.895, "y":0.885}
-            size_hint_x: 0.1
-            size_hint_y: 0.1
+            size_hint:(0.1, 0.1)
             cols:1
             Button:
                 size_hint_y: None
@@ -163,17 +225,13 @@ WindowManager:
                 border: (0,0,0,0)
                 background_color: (0.47,0.3,0.2,1)
                 color: (1,1,1,1)
-                background_normal: 'Images/settings.png'
-                background_down: 'Images/settings.png'
+                background_normal: root.manager.settings_icon_link
+                background_down: root.manager.settings_icon_link
                 on_press:
                     app.root.current = root.manager.last_screen
-                    root.manager.transition.direction = "up"
+#                    root.manager.transition.direction = "up"
 
-        GridLayout:
-            pos_hint:{"x":0.005, "y":0.885}
-            size_hint_x: 0.1
-            size_hint_y: 0.1
-            cols:1
+        grid_layout_fullscreen:
             Button:
                 id: screen_mode_button
                 size_hint_y: None
