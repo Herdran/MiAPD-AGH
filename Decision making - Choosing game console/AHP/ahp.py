@@ -136,6 +136,7 @@ class TestAHP(unittest.TestCase):
         print(ahp_result)
 
     def test_wikipedia_leader(self):
+        # https://en.wikipedia.org/wiki/Analytic_hierarchy_process_–_leader_example
         ahp_result = (
             AHP_builder()
             .add_alternative("Tom")
@@ -175,7 +176,6 @@ class TestAHP(unittest.TestCase):
 
         ranking = [k for k, _ in sorted(ahp_result.items(), key=lambda item: item[1], reverse=True)]
         self.assertEqual(ranking, ["Dick", "Tom", "Harry"])
-
 
 if __name__ == '__main__':
     unittest.main()
