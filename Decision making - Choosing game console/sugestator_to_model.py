@@ -4,7 +4,7 @@ class SugestatorToModel:
     def __init__(self, alternatives_path, criteria_path):
         self.load_alternatives(alternatives_path)
         self.load_criteria(criteria_path)
-        self.model = self.build_model()
+        self.build_model()
         
 
     def load_alternatives(self, path):
@@ -36,6 +36,7 @@ class SugestatorToModel:
         for criterion, sub_criteria in self.sub_criteria.items():
             for sub_criterion in sub_criteria:
                 self.model.add_sub_criterion(criterion, sub_criterion)
+        self.model.build()
 
 
 if __name__ == '__main__':
@@ -43,3 +44,4 @@ if __name__ == '__main__':
     print(sugestator.alternatives)
     print(sugestator.criteria)
     print(sugestator.sub_criteria)
+    print(sugestator.model)
