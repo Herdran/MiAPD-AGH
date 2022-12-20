@@ -31,29 +31,67 @@ WindowManager:
     size_hint:(0.1, 0.1)
     cols:1
 
+<Check@MDCheckbox>:
+    group: 'group'
+    size_hint: None, None
+    size: dp(48), dp(48)
+#    on_active: app.on_checkbox_active(*args)
+
 <WelcomeScreen>
     name: "welcome_screen"
 
     FloatLayout:
         size: root.width, root.height
         canvas.before:
-            Color:
-                rgba: (0.2,0.37,0.47,1)
+#            Color:
+#                rgba: (0.2,0.37,0.47,1)
             Rectangle:
                 pos: self.pos
                 size: self.size
-        Label:
-            pos_hint:{"x":0,"y":0.2}
-            font_size:35
-            color: 1,1,1
-            text:"Którą konsolę kupić? Quiz? \nQuestionnaire? Wtf is this"
 
-        Label:
-            pos_hint:{"x":0.4,"y":0.83}
-            size_hint:(0.2,0.15)
-            font_size:35
-            color: 1,1,1
-            text:"Sugestator 3000"
+    FloatLayout:
+        size: root.width, root.height
+        GridLayout:
+            pos_hint:{"x":0.3,"y":0.6}
+            size_hint:(0.4, 0.37)
+            cols:1
+            rows:2
+            padding:0
+            spacing:0
+            Label:
+#                pos_hint:{"y":0.86}
+                text_size: self.size
+#                size_hint:(0.2,0.15)
+                halign: 'center'
+                valign: 'top'
+                font_size:40
+    #            color: 1,1,1
+                color: 0.2,0.37,0.47,1
+                text:"Sugestator 3000"
+            Label:
+#                pos_hint:{"y":0.6}
+                text_size: self.size
+                halign: 'center'
+                valign: 'bottom'
+                font_size:25
+    #            color: 1,1,1
+                color: 0.2,0.37,0.47,1
+                text:"Którą konsolę kupić? Quiz? Questionnaire? Wtf is this"
+
+#        Label:
+#            pos_hint:{"x":0,"y":0.2}
+#            font_size:35
+##            color: 1,1,1
+#            color: 0.2,0.37,0.47,1
+#            text:"Którą konsolę kupić? Quiz? \nQuestionnaire? Wtf is this"
+#
+#        Label:
+#            pos_hint:{"x":0.4,"y":0.86}
+#            size_hint:(0.2,0.15)
+#            font_size:35
+##            color: 1,1,1
+#            color: 0.2,0.37,0.47,1
+#            text:"Sugestator 3000"
 
         grid_layout_generic:
             Button:
@@ -95,63 +133,126 @@ WindowManager:
     name: "main_screen"
 
     canvas.before:
-        Color:
-            rgba: (0.2,0.37,0.47,1)
+#        Color:
+#            rgba: (0.2,0.37,0.47,1)
         Rectangle:
             pos: self.pos
             size: self.size
 
     FloatLayout:
         size: root.width, root.height
-        Label:
-            pos_hint:{"x":0,"y":0.2}
-            font_size:35
-            color: 1,1,1
-            text:"Question? Maybe some additional\n info somewhere to help?"
+        id: grid
+        GridLayout:
+            pos_hint:{"x":0.3,"y":0.6}
+            size_hint:(0.4, 0.37)
+            cols:1
+            rows:2
+            padding:0
+            spacing:0
+            Label:
+#                pos_hint:{"y":0.86}
+                text_size: self.size
+#                size_hint:(0.2,0.15)
+                halign: 'center'
+                valign: 'top'
+                font_size:40
+    #            color: 1,1,1
+                color: 0.2,0.37,0.47,1
+                text:"Sugestator 3000"
+            Label:
+#                pos_hint:{"y":0.6}
+                text_size: self.size
+                halign: 'center'
+                valign: 'bottom'
+                font_size:25
+    #            color: 1,1,1
+                color: 0.2,0.37,0.47,1
+                text:"Question? Maybe some additional info somewhere to help?"
 
-        Label:
-            pos_hint:{"x":0.4,"y":0.83}
-            size_hint:(0.2,0.15)
-            font_size:35
-            color: 1,1,1
-            text:"Sugestator 3000"
+        Check:
+            pos_hint: {'center_x': .3, 'center_y': .5}
+            on_press:
+#                root.curr_val = -2
+                root.set_curr_val(-2)
+        Check:
+            pos_hint: {'center_x': .4, 'center_y': .5}
+            on_press:
+#                root.curr_val = -1
+                root.set_curr_val(-1)
+        Check:
+            active: True
+            pos_hint: {'center_x': .5, 'center_y': .5}
+            on_press:
+#                root.curr_val = 0
+                root.set_curr_val(0)
 
-        Label:
-            pos_hint:{"x":0.4,"y":0.0}
-            size_hint:(0.2,0.15)
-            font_size:35
-            color: 1,1,1
-            text:"Maybe progress bar?"
+        Check:
+            pos_hint: {'center_x': .6, 'center_y': .5}
+            on_press:
+#                root.curr_val = 1
+                root.set_curr_val(1)
+        Check:
+            pos_hint: {'center_x': .7, 'center_y': .5}
+            on_press:
+#                root.curr_val = 2
+                root.set_curr_val(2)
+
+        grid_layout_settings:
+            Button:
+                size_hint_y: None
+                height: self.width
+                border: (0,0,0,0)
+                background_color: (0.47,0.3,0.2,1)
+                color: (1,1,1,1)
+                background_normal: root.manager.settings_icon_link
+                background_down: root.manager.settings_icon_link
+                on_press:
+                    root.manager.last_screen = "main_screen"
+                    app.root.current = "settings_screen"
+#                    root.manager.transition.direction = "down"
+
 
         GridLayout:
-            pos_hint:{"x":0.2,"y":0.4}
-            size_hint:(0.25,0.15)
+            pos_hint:{"x":0.4,"y":0.25}
+            size_hint:(0.2,0.2)
             cols:1
             Button:
                 background_color: (0.47,0.3,0.2,1)
+                border: (0,0,0,0)
                 color: (1,1,1,1)
-                text:"Lewa opcja?"
+                background_normal: root.manager.button_rectangle_image_link
+                background_down: root.manager.button_rectangle_image_link
+                text:"Confirm?.."
                 on_press:
-                    app.root.current = "main_screen"
+                    root.get_curr_val()
 
         GridLayout:
-            pos_hint:{"x":0.55,"y":0.4}
-            size_hint:(0.25,0.15)
+            pos_hint:{"x":0.0,"y":0.6}
+            size_hint:(0.3,0.15)
             cols:1
-            Button:
-                background_color: (0.47,0.3,0.2,1)
-                color: (1,1,1,1)
-                text:"Prawa opcja? Maybe even\n more, like, depends\n on the question"
-                on_press:
-                    app.root.current = "main_screen"
+            Image:
+                source: root.manager.left_image_link
+                size: self.texture_size
+
+        GridLayout:
+            pos_hint:{"x":0.7,"y":0.6}
+            size_hint:(0.3,0.15)
+            cols:1
+            Image:
+                source: root.manager.right_image_link
+                size: self.texture_size
+#
 #            Button:
-#                pos_hint:{"x":0.6}
-#                size_hint_x: 0.4
+#                size_hint_y: None
+#                height: self.width
+#                border: (0,0,0,0)
 #                background_color: (0.47,0.3,0.2,1)
 #                color: (1,1,1,1)
-#                text:"Prawa opcja? Maybe even more, like depends on the question"
+#                background_normal: root.manager.settings_icon_link
+#                background_down: root.manager.settings_icon_link
 #                on_press:
-#                    app.root.current = "main_screen"
+#                    root.manager.last_screen = "main_screen"
+#                    app.root.current = "settings_screen"
 
 
 #        grid_layout_return
@@ -209,13 +310,15 @@ WindowManager:
                 background_down: root.manager.skip_icon_link
                 on_press:
                     print("skipped a question")
+#                    root.reset_checkbox()
+                    root.reset_checkbox()
 
 <SettingsScreen>
     name: "settings_screen"
 
     canvas.before:
-        Color:
-            rgba: (0.2,0.37,0.47,1)
+#        Color:
+#            rgba: (0.2,0.37,0.47,1)
         Rectangle:
             pos: self.pos
             size: self.size
