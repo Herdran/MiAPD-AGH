@@ -55,6 +55,24 @@ class AHP_complete_model:
         gm_rows_sum = sum(gm_rows.values())
         return {key: value / gm_rows_sum for key, value in gm_rows.items()}
 
+    def koczkoaj(self, criterion: str):
+        alts = self.model.alternatives
+        T = []
+        for i in range(len(alts)):
+            for j in range(i+1, len(alts)):
+                for k in range(j+1, len(alts)):
+                    T.append((i, j, k))
+        
+        def c(i, j):
+            return self.model.alternatives_comparison_matrixes[criterion][alts[i]][alts[j]]
+
+        K = {}
+        for (i, j, k) in T:
+            K.update({(i, j, k):min(abs(1-((c(i, k)*c(k, j)/c(i, j)))), abs(1-((c(i, j)*c(i, k)/c(k, j)))))})
+
+        return max(K.values())
+
+
     def calculate(self):
         get_criteria_or_sub_criteria = lambda criterion: self.model.sub_criteria[criterion] if criterion in self.model.sub_criteria else [criterion]
         final_criterion_list = reduce(lambda acc, criterion: acc + get_criteria_or_sub_criteria(criterion), self.model.criteria, [])
@@ -215,7 +233,6 @@ class TestAHP(unittest.TestCase):
             .calculate()
         )
 
-
         ranking = [k for k, _ in sorted(ahp_result.items(), key=lambda item: item[1], reverse=True)]
         self.assertEqual(ranking, ["Dick", "Tom", "Harry"])
 
@@ -243,6 +260,26 @@ class TestAHP(unittest.TestCase):
         )
 
         print(ahp_result)
+
+    def test_koczkodaj(self):
+        alts = ["a", "b", "c", "d", "e"]
+        cryt = ["1"]
+        mat_list = [
+            [1, 69/74, 10/31, 7/22, 19/7],
+            [74/69, 1, 27/43, 2/3, 34/13],
+            [31/10, 43/27, 1, 47/38, 73/7],
+            [22/7, 3/2, 38/47, 1, 7],
+            [7/19, 13/34, 7/73, 1/7, 1],
+        ]
+        mat_dict = {
+            alts[a]:{alts[b]:mat_list[a][b] for b in range(len(alts))} for a in range(len(alts))
+        }
+        model = AHP_model(cryt, {}, alts)
+        model.alternatives_comparison_matrixes = {"1":mat_dict}
+        complete = AHP_complete_model(model)
+
+        self.assertAlmostEqual(complete.koczkoaj("1"), 0.60059, 5)
+
             
 
 
