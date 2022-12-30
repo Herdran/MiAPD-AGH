@@ -193,7 +193,7 @@ class TestAHP(unittest.TestCase):
             .calculate()
         )
 
-        print(ahp_result)
+        self.assertGreater(ahp_result["A"], ahp_result["B"])
 
     def test_wikipedia_leader(self):
         # https://en.wikipedia.org/wiki/Analytic_hierarchy_process_–_leader_example
@@ -259,7 +259,7 @@ class TestAHP(unittest.TestCase):
             .calculate()
         )
 
-        print(ahp_result)
+        self.assertGreater(ahp_result["A"], ahp_result["B"])
 
     def test_koczkodaj(self):
         alts = ["a", "b", "c", "d", "e"]
