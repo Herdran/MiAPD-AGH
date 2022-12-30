@@ -8,16 +8,17 @@ from kivy.lang.builder import Builder
 from kivy.properties import StringProperty
 from kivy.uix.screenmanager import Screen, ScreenManager
 from kivymd.app import MDApp
+from sugestator_to_model import SugestatorToModel
 
 Config.set("input", "mouse", "mouse,disable_multitouch")
 
 file_path = str(pathlib.Path(__file__).parent.resolve())
 
-ahp = None
+sugestator_to_builder = SugestatorToModel(os.path.join("Data", "alternatives.txt"), os.path.join("Data", "criteria.txt"))
 
-criteria = ["Price", "Graphics", "Performance"]
-
-alternatives = ["PS4", "PS5", "XBOX ONE", "XBOX SERIES X", "XBOX SERIES S", "NINTENDO SWITCH", "STEAM DECK"]
+ahp = sugestator_to_builder.model
+alternatives = sugestator_to_builder.alternatives
+criteria = sugestator_to_builder.get_criteria_to_choose()
 
 images_path = os.path.join(file_path, "Images")
 

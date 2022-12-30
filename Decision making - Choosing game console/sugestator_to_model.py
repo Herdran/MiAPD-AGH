@@ -1,19 +1,21 @@
+import os
+
 from AHP.ahp import AHP_builder
 
 class SugestatorToModel:
-    def __init__(self, alternatives_path, criteria_path):
+    def __init__(self, alternatives_path: os.path, criteria_path: os.path):
         self.load_alternatives(alternatives_path)
         self.load_criteria(criteria_path)
         self.build_model()
-        
 
-    def load_alternatives(self, path):
+
+    def load_alternatives(self, path: os.path):
         self.alternatives = []
         with open(path, 'r') as f:
             for line in f:
                 self.alternatives.append(line.strip())
 
-    def load_criteria(self, path):
+    def load_criteria(self, path: os.path):
         self.criteria = []
         self.sub_criteria = {}
         with open(path, 'r') as f:
@@ -37,6 +39,18 @@ class SugestatorToModel:
             for sub_criterion in sub_criteria:
                 self.model.add_sub_criterion(criterion, sub_criterion)
         self.model.build()
+
+    def get_criteria_to_choose(self) -> list[str]:
+        result = []
+        
+        for criterion in self.criteria:
+            if criterion not in self.sub_criteria:
+                result.append(criterion)
+            else:
+                for sub_criterion in self.sub_criteria[criterion]:
+                    result.append(sub_criterion)
+
+        return result
 
 
 if __name__ == '__main__':
