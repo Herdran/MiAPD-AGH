@@ -14,11 +14,11 @@ Config.set("input", "mouse", "mouse,disable_multitouch")
 
 file_path = str(pathlib.Path(__file__).parent.resolve())
 
-sugestator_to_builder = SugestatorToModel(os.path.join("Data", "alternatives.txt"), os.path.join("Data", "criteria.txt"))
+sugestator_to_model = SugestatorToModel(os.path.join("Data", "alternatives.txt"), os.path.join("Data", "criteria.txt"))
 
-ahp = sugestator_to_builder.model
-alternatives = sugestator_to_builder.alternatives
-criteria = sugestator_to_builder.get_criteria_to_choose()
+ahp = sugestator_to_model.model
+alternatives = sugestator_to_model.alternatives
+criteria = sugestator_to_model.get_criteria_to_choose()
 
 images_path = os.path.join(file_path, "Images")
 
@@ -26,6 +26,15 @@ alternatives_images_links = {alternative: alternative.replace(" ", "_") + ".png"
 
 alternatives_combinations = list(itertools.combinations(alternatives, 2))
 
+def mapping_function(val: int):
+    match val:
+        case -2: return -9
+        case -1: return -4
+        case 0:  return 1
+        case 1:  return 4
+        case 2:  return -9 
+
+sugestator_to_model.set_mapping_function(mapping_function)
 
 class WelcomeScreen(Screen):
     pass
@@ -52,6 +61,7 @@ class MainScreen(Screen):
 
     def confirm_answer(self):
         print(self.curr_val)
+        sugestator_to_model.add_partial_comparision(self.left_text, self.right_text, self.curr_criterion, self.curr_val)
         self.change_question()
 
     def skip_question(self):
@@ -64,6 +74,7 @@ class MainScreen(Screen):
                 self.curr_criterion_index = 0
                 self.curr_alternatives_index = 0
                 print("All questions answered, displaying results")
+                sugestator_to_model.load_comparisions_value_into_model()
                 self.manager.current = "results_screen"
             else:
                 self.curr_criterion_index += 1
