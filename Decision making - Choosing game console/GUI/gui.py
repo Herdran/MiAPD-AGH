@@ -112,7 +112,6 @@ class CriteriaScreen(Screen):
         self.curr_val = val
 
     def confirm_answer(self):
-        # masz tez analogiczna metpode do sub kryteriow
         sugestator_to_model.add_partial_cryteria_comparision(self.left_text, self.right_text, self.curr_val)
         self.change_question()
 
