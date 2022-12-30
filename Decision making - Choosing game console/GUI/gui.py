@@ -81,7 +81,6 @@ class MainScreen(Screen):
             if self.curr_criterion_index >= self.criteria_count - 1:
                 self.curr_criterion_index = 0
                 self.curr_alternatives_index = 0
-                sugestator_to_model.load_comparisions_value_into_model()
                 self.manager.current = "criteria_screen"
             else:
                 self.curr_criterion_index += 1
@@ -113,7 +112,8 @@ class CriteriaScreen(Screen):
         self.curr_val = val
 
     def confirm_answer(self):
-        # sugestator_to_model.add_partial_comparision(self.left_text, self.right_text, self.curr_criterion, self.curr_val)
+        # masz tez analogiczna metpode do sub kryteriow
+        sugestator_to_model.add_partial_cryteria_comparision(self.left_text, self.right_text, self.curr_val)
         self.change_question()
 
     def change_question(self):
@@ -121,6 +121,13 @@ class CriteriaScreen(Screen):
             self.curr_criterion_index = 0
 
             self.manager.current = "results_screen"
+
+            # ne gdzie to dac to na koncu wrzuca wszystkie dane do modelu
+            complete_model = sugestator_to_model.load_comparisions_value_into_model()
+            # i tu dostajesz kompletny model
+            # masz metody calculate -> zwraca ranking
+            # i koczkoaj od danego kryterium
+
         else:
             self.curr_criterion_index += 1
 
