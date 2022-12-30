@@ -67,13 +67,24 @@ class SugestatorToModel:
 
     def get_criteria_to_choose(self) -> list[str]:
         result = []
-        
+
         for criterion in self.criteria:
             if criterion not in self.sub_criteria:
                 result.append(criterion)
             else:
                 for sub_criterion in self.sub_criteria[criterion]:
                     result.append(sub_criterion)
+        return result
+
+    def get_criteria_and_subcriteria_combinations(self) -> list[(str, str)]:
+        result = list(itertools.combinations(self.criteria, 2))
+
+        for criterion in self.criteria:
+            if criterion in self.sub_criteria:
+                tmp = []
+                for sub_criterion in self.sub_criteria[criterion]:
+                    tmp.append(sub_criterion)
+                result += list(itertools.combinations(tmp, 2))
         return result
 
     def add_partial_comparision(self, first_alter: str, second_alter: str, criterion: str, value: int):

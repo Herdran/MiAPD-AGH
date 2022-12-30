@@ -4,6 +4,7 @@ WindowManager:
     transition: WipeTransition()
     WelcomeScreen:
     MainScreen:
+    CriteriaScreen:
     SettingsScreen:
     ResultsScreen
 
@@ -27,10 +28,10 @@ WindowManager:
     size_hint:(0.1, 0.1)
     cols:1
 
-<grid_layout_skip@GridLayout>
-    pos_hint:{"x":0.895, "y":0.095}
-    size_hint:(0.1, 0.1)
-    cols:1
+#<grid_layout_skip@GridLayout>
+#    pos_hint:{"x":0.895, "y":0.095}
+#    size_hint:(0.1, 0.1)
+#    cols:1
 
 <Check@MDCheckbox>:
     group: 'group'
@@ -134,8 +135,6 @@ WindowManager:
     name: "main_screen"
 
     canvas.before:
-#        Color:
-#            rgba: (0.2,0.37,0.47,1)
         Rectangle:
             pos: self.pos
             size: self.size
@@ -150,52 +149,41 @@ WindowManager:
             padding:0
             spacing:0
             Label:
-#                pos_hint:{"y":0.86}
                 text_size: self.size
-#                size_hint:(0.2,0.15)
                 halign: 'center'
                 valign: 'top'
                 font_size:40
-    #            color: 1,1,1
                 color: 0.2,0.37,0.47,1
                 text:"Sugestator 3000"
             Label:
-#                pos_hint:{"y":0.6}
                 text_size: self.size
                 halign: 'center'
                 valign: 'bottom'
                 font_size:25
-    #            color: 1,1,1
                 color: 0.2,0.37,0.47,1
-                text:"Question? Maybe some additional info somewhere to help?"
                 text: root.curr_criterion
 
         Check:
             pos_hint: {'center_x': .3, 'center_y': .5}
             on_press:
-#                root.curr_val = -2
                 root.set_curr_val(-2)
         Check:
             pos_hint: {'center_x': .4, 'center_y': .5}
             on_press:
-#                root.curr_val = -1
                 root.set_curr_val(-1)
         Check:
             active: True
             pos_hint: {'center_x': .5, 'center_y': .5}
             on_press:
-#                root.curr_val = 0
                 root.set_curr_val(0)
 
         Check:
             pos_hint: {'center_x': .6, 'center_y': .5}
             on_press:
-#                root.curr_val = 1
                 root.set_curr_val(1)
         Check:
             pos_hint: {'center_x': .7, 'center_y': .5}
             on_press:
-#                root.curr_val = 2
                 root.set_curr_val(2)
 
         grid_layout_settings:
@@ -210,7 +198,6 @@ WindowManager:
                 on_press:
                     root.manager.last_screen = "main_screen"
                     app.root.current = "settings_screen"
-#                    root.manager.transition.direction = "down"
 
 
         GridLayout:
@@ -223,8 +210,6 @@ WindowManager:
                 text:"Confirm?.."
                 on_press:
                     root.confirm_answer()
-
-
 
         GridLayout:
             pos_hint:{"x":0.0,"y":0.6}
@@ -266,32 +251,6 @@ WindowManager:
                 font_size:40
                 color: 0.2,0.37,0.47,1
                 text: root.right_text
-#
-#            Button:
-#                size_hint_y: None
-#                height: self.width
-#                border: (0,0,0,0)
-#                background_color: (0.47,0.3,0.2,1)
-#                color: (1,1,1,1)
-#                background_normal: root.manager.settings_icon_link
-#                background_down: root.manager.settings_icon_link
-#                on_press:
-#                    root.manager.last_screen = "main_screen"
-#                    app.root.current = "settings_screen"
-
-        grid_layout_skip:
-            Button:
-                size_hint_y: None
-                height: self.width
-                border: (0,0,0,0)
-                background_color: (0.47,0.3,0.2,1)
-                color: (1,1,1,1)
-                background_normal: root.manager.skip_icon_link
-                background_down: root.manager.skip_icon_link
-                on_press:
-#                    print("skipped a question")
-#                    root.reset_checkbox()
-                    root.skip_question()
 
 
         grid_layout_settings:
@@ -306,7 +265,6 @@ WindowManager:
                 on_press:
                     root.manager.last_screen = "main_screen"
                     app.root.current = "settings_screen"
-#                    root.manager.transition.direction = "down"
 
         grid_layout_fullscreen:
             Button:
@@ -332,7 +290,165 @@ WindowManager:
                 background_down: root.manager.return_icon_link
                 on_press:
                     app.root.current = "welcome_screen"
-#                    root.manager.transition.direction = "right"
+
+<CriteriaScreen>
+    name: "criteria_screen"
+
+    canvas.before:
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    FloatLayout:
+        size: root.width, root.height
+        GridLayout:
+            pos_hint:{"x":0.3,"y":0.6}
+            size_hint:(0.4, 0.37)
+            cols:1
+            rows:2
+            padding:0
+            spacing:0
+            Label:
+                text_size: self.size
+                halign: 'center'
+                valign: 'top'
+                font_size:40
+                color: 0.2,0.37,0.47,1
+                text:"Sugestator 3000"
+            Label:
+                text_size: self.size
+                halign: 'center'
+                valign: 'bottom'
+                font_size: 25
+                color: 0.2,0.37,0.47,1
+                text: "Zaznacz które kryterium jest dla Ciebie ważniejsze"
+
+        Check:
+            pos_hint: {'center_x': .3, 'center_y': .5}
+            on_press:
+                root.set_curr_val(-2)
+        Check:
+            pos_hint: {'center_x': .4, 'center_y': .5}
+            on_press:
+                root.set_curr_val(-1)
+        Check:
+            active: True
+            pos_hint: {'center_x': .5, 'center_y': .5}
+            on_press:
+                root.set_curr_val(0)
+
+        Check:
+            pos_hint: {'center_x': .6, 'center_y': .5}
+            on_press:
+                root.set_curr_val(1)
+        Check:
+            pos_hint: {'center_x': .7, 'center_y': .5}
+            on_press:
+                root.set_curr_val(2)
+
+        grid_layout_settings:
+            Button:
+                size_hint_y: None
+                height: self.width
+                border: (0,0,0,0)
+                background_color: (0.47,0.3,0.2,1)
+                color: (1,1,1,1)
+                background_normal: root.manager.settings_icon_link
+                background_down: root.manager.settings_icon_link
+                on_press:
+                    root.manager.last_screen = "criteria_screen"
+                    app.root.current = "settings_screen"
+
+        GridLayout:
+            pos_hint:{"x":0.4,"y":0.25}
+            size_hint:(0.2,0.1)
+            cols:1
+            Button:
+                background_color: (0.47,0.3,0.2,1)
+                color: (1,1,1,1)
+                text:"Confirm?.."
+                on_press:
+                    root.confirm_answer()
+
+#        GridLayout:
+#            pos_hint:{"x":0.0,"y":0.6}
+#            size_hint:(0.3,0.15)
+#            cols:1
+#            Image:
+#                source: root.left_image_link
+#                size: self.texture_size
+
+        GridLayout:
+            pos_hint:{"x":0.0,'center_y': .5}
+            size_hint:(0.3,0.3)
+            cols:1
+            Label:
+                text_size: self.size
+                halign: 'center'
+                valign: 'center'
+                font_size:40
+                color: 0.2,0.37,0.47,1
+                text: root.left_text
+
+#        GridLayout:
+#            pos_hint:{"x":0.7,"y":0.6}
+#            size_hint:(0.3,0.15)
+#            cols:1
+#            Image:
+#                size_hint:(1,0.6)
+#                source: root.right_image_link
+#                size: self.texture_size
+
+        GridLayout:
+            pos_hint:{"x":0.7,'center_y': .5}
+            size_hint:(0.3,0.3)
+            cols:1
+            Label:
+                text_size: self.size
+                halign: 'center'
+                valign: 'center'
+                font_size:40
+                color: 0.2,0.37,0.47,1
+                text: root.right_text
+
+
+        grid_layout_settings:
+            Button:
+                size_hint_y: None
+                height: self.width
+                border: (0,0,0,0)
+                background_color: (0.47,0.3,0.2,1)
+                color: (1,1,1,1)
+                background_normal: root.manager.settings_icon_link
+                background_down: root.manager.settings_icon_link
+                on_press:
+                    root.manager.last_screen = "main_screen"
+                    app.root.current = "settings_screen"
+
+        grid_layout_fullscreen:
+            Button:
+                id: screen_mode_button
+                size_hint_y: None
+                height: self.width
+                border: (0,0,0,0)
+                background_color: (0.47,0.3,0.2,1)
+                color: (1,1,1,1)
+                background_normal: root.manager.screen_mode_change_image_link
+                background_down: root.manager.screen_mode_change_image_link
+                on_press:
+                    root.manager.screen_mode_change()
+
+        grid_layout_return:
+            Button:
+                size_hint_y: None
+                height: self.width
+                border: (0,0,0,0)
+                background_color: (0.47,0.3,0.2,1)
+                color: (1,1,1,1)
+                background_normal: root.manager.return_icon_link
+                background_down: root.manager.return_icon_link
+                on_press:
+                    app.root.current = "welcome_screen"
 
 
 <SettingsScreen>

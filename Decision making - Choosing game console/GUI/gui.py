@@ -26,15 +26,27 @@ alternatives_images_links = {alternative: alternative.replace(" ", "_") + ".png"
 
 alternatives_combinations = list(itertools.combinations(alternatives, 2))
 
+criteria_and_subcriteria_combinations = sugestator_to_model.get_criteria_and_subcriteria_combinations()
+
+print(criteria_and_subcriteria_combinations)
+
+
 def mapping_function(val: int):
     match val:
-        case -2: return -9
-        case -1: return -4
-        case 0:  return 1
-        case 1:  return 4
-        case 2:  return -9 
+        case -2:
+            return -9
+        case -1:
+            return -4
+        case 0:
+            return 1
+        case 1:
+            return 4
+        case 2:
+            return -9
+
 
 sugestator_to_model.set_mapping_function(mapping_function)
+
 
 class WelcomeScreen(Screen):
     pass
@@ -60,12 +72,8 @@ class MainScreen(Screen):
         self.curr_val = val
 
     def confirm_answer(self):
-        print(self.curr_val)
+        # print(self.curr_val)
         sugestator_to_model.add_partial_comparision(self.left_text, self.right_text, self.curr_criterion, self.curr_val)
-        self.change_question()
-
-    def skip_question(self):
-        print("Skipping question? idk how would that work")
         self.change_question()
 
     def change_question(self):
@@ -73,9 +81,8 @@ class MainScreen(Screen):
             if self.curr_criterion_index >= self.criteria_count - 1:
                 self.curr_criterion_index = 0
                 self.curr_alternatives_index = 0
-                print("All questions answered, displaying results")
                 sugestator_to_model.load_comparisions_value_into_model()
-                self.manager.current = "results_screen"
+                self.manager.current = "criteria_screen"
             else:
                 self.curr_criterion_index += 1
                 self.curr_alternatives_index = 0
@@ -88,16 +95,37 @@ class MainScreen(Screen):
         self.left_image_link = os.path.join(images_path, alternatives_images_links[self.left_text])
         self.right_image_link = os.path.join(images_path, alternatives_images_links[self.right_text])
 
-    # def reset_checkbox(self):
-    #     for child in reversed(self.ids.grid.children):
-    #         # print(child)
-    #         if isinstance(child, MDCheckbox):
-    #             child.active = False
-    #             print("test")
-
 
 class SettingsScreen(Screen):
     pass
+
+
+class CriteriaScreen(Screen):
+    curr_val = 0
+    curr_criterion_index = -1
+
+    criteria_combinations_count = len(criteria_and_subcriteria_combinations)
+
+    left_text = StringProperty(criteria_and_subcriteria_combinations[curr_criterion_index][0])
+    right_text = StringProperty(criteria_and_subcriteria_combinations[curr_criterion_index][1])
+
+    def set_curr_val(self, val):
+        self.curr_val = val
+
+    def confirm_answer(self):
+        # sugestator_to_model.add_partial_comparision(self.left_text, self.right_text, self.curr_criterion, self.curr_val)
+        self.change_question()
+
+    def change_question(self):
+        if self.curr_criterion_index >= self.criteria_combinations_count - 1:
+            self.curr_criterion_index = 0
+
+            self.manager.current = "results_screen"
+        else:
+            self.curr_criterion_index += 1
+
+        self.left_text = criteria_and_subcriteria_combinations[self.curr_criterion_index][0]
+        self.right_text = criteria_and_subcriteria_combinations[self.curr_criterion_index][1]
 
 
 class ResultsScreen(Screen):
