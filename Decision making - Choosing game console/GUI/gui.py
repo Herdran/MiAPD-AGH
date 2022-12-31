@@ -55,7 +55,7 @@ class WelcomeScreen(Screen):
 class MainScreen(Screen):
     curr_val = 0
     curr_criterion_index = 0
-    curr_alternatives_index = -1
+    curr_alternatives_index = 0
 
     criteria_count = len(criteria)
     alternatives_combinations_count = len(alternatives_combinations)
@@ -101,7 +101,7 @@ class SettingsScreen(Screen):
 
 class CriteriaScreen(Screen):
     curr_val = 0
-    curr_criterion_index = -1
+    curr_criterion_index = 0
 
     criteria_combinations_count = len(criteria_and_subcriteria_combinations)
 
@@ -126,6 +126,11 @@ class CriteriaScreen(Screen):
             # i tu dostajesz kompletny model
             # masz metody calculate -> zwraca ranking
             # i koczkoaj od danego kryterium
+            print(complete_model.calculate())
+            print("============")
+            print(complete_model.koczkoaj("Price"))
+            print(complete_model.koczkoaj("Exclusives"))
+            print(complete_model.koczkoaj("Subscription model"))
 
         else:
             self.curr_criterion_index += 1

@@ -78,7 +78,7 @@ WindowManager:
                 font_size:25
     #            color: 1,1,1
                 color: 0.2,0.37,0.47,1
-                text:"Którą konsolę kupić? Quiz? Questionnaire? Wtf is this"
+                text:"Analytic Hierarchy Process implementation"
 
 #        Label:
 #            pos_hint:{"x":0,"y":0.2}
@@ -99,7 +99,7 @@ WindowManager:
             Button:
                 background_color: (0.47,0.3,0.2,1)
                 color: (1,1,1,1)
-                text:"Idk bro"
+                text:"Start"
                 on_press:
                     app.root.current = "main_screen"
 #                    root.manager.transition.direction = "left"
@@ -207,7 +207,7 @@ WindowManager:
             Button:
                 background_color: (0.47,0.3,0.2,1)
                 color: (1,1,1,1)
-                text:"Confirm?.."
+                text:"Confirm"
                 on_press:
                     root.confirm_answer()
 
@@ -321,7 +321,7 @@ WindowManager:
                 valign: 'bottom'
                 font_size: 25
                 color: 0.2,0.37,0.47,1
-                text: "Zaznacz które kryterium jest dla Ciebie ważniejsze"
+                text: "Choose which of the following criteria is more important to you"
 
         Check:
             pos_hint: {'center_x': .3, 'center_y': .5}
@@ -366,7 +366,7 @@ WindowManager:
             Button:
                 background_color: (0.47,0.3,0.2,1)
                 color: (1,1,1,1)
-                text:"Confirm?.."
+                text:"Confirm"
                 on_press:
                     root.confirm_answer()
 
@@ -529,7 +529,7 @@ WindowManager:
                 font_size:40
     #            color: 1,1,1
                 color: 0.2,0.37,0.47,1
-                text:"Wyniki"
+                text:"Results"
 
         grid_layout_settings:
             Button:
