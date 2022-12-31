@@ -521,15 +521,64 @@ WindowManager:
             padding:0
             spacing:0
             Label:
-#                pos_hint:{"y":0.86}
                 text_size: self.size
-#                size_hint:(0.2,0.15)
                 halign: 'center'
                 valign: 'top'
                 font_size:40
-    #            color: 1,1,1
                 color: 0.2,0.37,0.47,1
                 text:"Results"
+
+        GridLayout:
+            pos_hint:{"x":0.1,"y":0.70}
+            size_hint:(0.8, 0.1)
+            cols:2
+            padding:0
+            spacing:0
+            Label:
+                text_size: self.size
+                halign: 'center'
+                valign: 'top'
+                font_size:25
+                color: 0.2,0.37,0.47,1
+                text:"Alternatives"
+
+            Label:
+                text_size: self.size
+                halign: 'center'
+                valign: 'top'
+                font_size:25
+                color: 0.2,0.37,0.47,1
+                text:"Criteria"
+
+        GridLayout:
+            pos_hint:{"x":0.1,"y":0.05}
+            size_hint:(0.8, 0.7)
+            cols:2
+            padding:0
+            spacing:0
+
+            ScrollView:
+                do_scroll_x: False
+                do_scroll_y: True
+                GridLayout:
+                    id:left_scroll_view
+                    cols:1
+                    padding:0
+                    spacing:0
+                    size_hint_y: None
+                    height: self.minimum_height
+
+            ScrollView:
+                do_scroll_x: False
+                do_scroll_y: True
+                GridLayout:
+                    id:right_scroll_view
+                    cols:1
+                    padding:0
+                    spacing:0
+                    size_hint_y: None
+                    height: self.minimum_height
+
 
         grid_layout_settings:
             Button:

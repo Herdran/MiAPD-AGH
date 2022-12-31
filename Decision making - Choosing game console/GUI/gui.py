@@ -6,7 +6,10 @@ from kivy.config import Config
 from kivy.core.window import Window
 from kivy.lang.builder import Builder
 from kivy.properties import StringProperty
+from kivy.uix.gridlayout import GridLayout
+from kivy.uix.label import Label
 from kivy.uix.screenmanager import Screen, ScreenManager
+from kivy.uix.scrollview import ScrollView
 from kivymd.app import MDApp
 from sugestator_to_model import SugestatorToModel
 
@@ -27,8 +30,6 @@ alternatives_images_links = {alternative: alternative.replace(" ", "_") + ".png"
 alternatives_combinations = list(itertools.combinations(alternatives, 2))
 
 criteria_and_subcriteria_combinations = sugestator_to_model.get_criteria_and_subcriteria_combinations()
-
-print(criteria_and_subcriteria_combinations)
 
 
 def mapping_function(val: int):
@@ -72,7 +73,6 @@ class MainScreen(Screen):
         self.curr_val = val
 
     def confirm_answer(self):
-        # print(self.curr_val)
         sugestator_to_model.add_partial_comparision(self.left_text, self.right_text, self.curr_criterion, self.curr_val)
         self.change_question()
 
@@ -119,18 +119,20 @@ class CriteriaScreen(Screen):
         if self.curr_criterion_index >= self.criteria_combinations_count - 1:
             self.curr_criterion_index = 0
 
-            self.manager.current = "results_screen"
-
             # ne gdzie to dac to na koncu wrzuca wszystkie dane do modelu
             complete_model = sugestator_to_model.load_comparisions_value_into_model()
             # i tu dostajesz kompletny model
             # masz metody calculate -> zwraca ranking
             # i koczkoaj od danego kryterium
-            print(complete_model.calculate())
-            print("============")
-            print(complete_model.koczkoaj("Price"))
-            print(complete_model.koczkoaj("Exclusives"))
-            print(complete_model.koczkoaj("Subscription model"))
+
+            self.manager.get_screen('results_screen').generate_result_view(complete_model)
+            self.manager.current = "results_screen"
+
+            # print(complete_model.calculate())
+            # print("============")
+            # print(complete_model.koczkoaj("Price"))
+            # print(complete_model.koczkoaj("Exclusives"))
+            # print(complete_model.koczkoaj("Subscription model"))
 
         else:
             self.curr_criterion_index += 1
@@ -140,7 +142,38 @@ class CriteriaScreen(Screen):
 
 
 class ResultsScreen(Screen):
-    pass
+    # def __init__(self, **kwargs):
+    #     super().__init__(**kwargs)
+    #
+    #     layout = GridLayout(cols=2, pos_hint={"x": 0.15, "y": 0.2}, size_hint=(.7, .7))
+    #     self.layout_left = GridLayout(cols=1, spacing=5, size_hint_y=None)
+    #     self.layout_right = GridLayout(cols=1, spacing=5, size_hint_y=None)
+    #     self.layout_left.bind(minimum_height=self.layout_left.setter('height'))
+    #     self.layout_right.bind(minimum_height=self.layout_right.setter('height'))
+    #
+    #
+    #     scroll_left = ScrollView(size_hint=(1, None), size=(Window.width, Window.height))
+    #     scroll_left.add_widget(self.layout_left)
+    #     scroll_right = ScrollView(size_hint=(1, None), size=(Window.width, Window.height))
+    #     scroll_right.add_widget(self.layout_right)
+    #     layout.add_widget(scroll_left)
+    #     layout.add_widget(scroll_right)
+    #     self.add_widget(layout)
+
+    def generate_result_view(self, complete_model):
+        results = complete_model.calculate()
+        results = dict(sorted(results.items(), key=lambda item: item[1], reverse=True))
+
+        for key in results:
+            lbl = Label(text=key + "  ---  " + str(results[key]), size_hint_y=None, color=(0, 0, 0, 1))
+            self.ids.left_scroll_view.add_widget(lbl)
+
+        sorted_koczkoaj = {criterion: complete_model.koczkoaj(criterion) for criterion in criteria}
+        sorted_koczkoaj = dict(sorted(sorted_koczkoaj.items(), key=lambda item: item[1], reverse=True))
+
+        for key in sorted_koczkoaj:
+            lbl2 = Label(text=key + "  ---  " + str(sorted_koczkoaj[key]), size_hint_y=None, color=(0, 0, 0, 1))
+            self.ids.right_scroll_view.add_widget(lbl2)
 
 
 class WindowManager(ScreenManager):
