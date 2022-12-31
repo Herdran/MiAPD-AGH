@@ -6,10 +6,8 @@ from kivy.config import Config
 from kivy.core.window import Window
 from kivy.lang.builder import Builder
 from kivy.properties import StringProperty
-from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
 from kivy.uix.screenmanager import Screen, ScreenManager
-from kivy.uix.scrollview import ScrollView
 from kivymd.app import MDApp
 from sugestator_to_model import SugestatorToModel
 
@@ -119,20 +117,10 @@ class CriteriaScreen(Screen):
         if self.curr_criterion_index >= self.criteria_combinations_count - 1:
             self.curr_criterion_index = 0
 
-            # ne gdzie to dac to na koncu wrzuca wszystkie dane do modelu
             complete_model = sugestator_to_model.load_comparisions_value_into_model()
-            # i tu dostajesz kompletny model
-            # masz metody calculate -> zwraca ranking
-            # i koczkoaj od danego kryterium
 
             self.manager.get_screen('results_screen').generate_result_view(complete_model)
             self.manager.current = "results_screen"
-
-            # print(complete_model.calculate())
-            # print("============")
-            # print(complete_model.koczkoaj("Price"))
-            # print(complete_model.koczkoaj("Exclusives"))
-            # print(complete_model.koczkoaj("Subscription model"))
 
         else:
             self.curr_criterion_index += 1
@@ -142,24 +130,6 @@ class CriteriaScreen(Screen):
 
 
 class ResultsScreen(Screen):
-    # def __init__(self, **kwargs):
-    #     super().__init__(**kwargs)
-    #
-    #     layout = GridLayout(cols=2, pos_hint={"x": 0.15, "y": 0.2}, size_hint=(.7, .7))
-    #     self.layout_left = GridLayout(cols=1, spacing=5, size_hint_y=None)
-    #     self.layout_right = GridLayout(cols=1, spacing=5, size_hint_y=None)
-    #     self.layout_left.bind(minimum_height=self.layout_left.setter('height'))
-    #     self.layout_right.bind(minimum_height=self.layout_right.setter('height'))
-    #
-    #
-    #     scroll_left = ScrollView(size_hint=(1, None), size=(Window.width, Window.height))
-    #     scroll_left.add_widget(self.layout_left)
-    #     scroll_right = ScrollView(size_hint=(1, None), size=(Window.width, Window.height))
-    #     scroll_right.add_widget(self.layout_right)
-    #     layout.add_widget(scroll_left)
-    #     layout.add_widget(scroll_right)
-    #     self.add_widget(layout)
-
     def generate_result_view(self, complete_model):
         results = complete_model.calculate()
         results = dict(sorted(results.items(), key=lambda item: item[1], reverse=True))
@@ -186,10 +156,10 @@ class WindowManager(ScreenManager):
     def screen_mode_change(self):
         if Window.fullscreen:
             Window.fullscreen = False
-            self.screen_mode_change_image_link = os.path.join(self.images_path, "fullscreen_maximize.png")
+            self.screen_mode_change_image_link = os.path.join(images_path, "fullscreen_maximize.png")
         else:
             Window.fullscreen = "auto"
-            self.screen_mode_change_image_link = os.path.join(self.images_path, "fullscreen_minimalize.png")
+            self.screen_mode_change_image_link = os.path.join(images_path, "fullscreen_minimalize.png")
 
 
 class Gui(MDApp):

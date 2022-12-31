@@ -28,16 +28,10 @@ WindowManager:
     size_hint:(0.1, 0.1)
     cols:1
 
-#<grid_layout_skip@GridLayout>
-#    pos_hint:{"x":0.895, "y":0.095}
-#    size_hint:(0.1, 0.1)
-#    cols:1
-
 <Check@MDCheckbox>:
     group: 'group'
     size_hint: None, None
     size: dp(48), dp(48)
-#    on_active: app.on_checkbox_active(*args)
 
 <WelcomeScreen>
     name: "welcome_screen"
@@ -61,39 +55,19 @@ WindowManager:
             padding:0
             spacing:0
             Label:
-#                pos_hint:{"y":0.86}
                 text_size: self.size
-#                size_hint:(0.2,0.15)
                 halign: 'center'
                 valign: 'top'
                 font_size:40
-    #            color: 1,1,1
                 color: 0.2,0.37,0.47,1
                 text:"Sugestator 3000"
             Label:
-#                pos_hint:{"y":0.6}
                 text_size: self.size
                 halign: 'center'
                 valign: 'bottom'
                 font_size:25
-    #            color: 1,1,1
                 color: 0.2,0.37,0.47,1
                 text:"Analytic Hierarchy Process implementation"
-
-#        Label:
-#            pos_hint:{"x":0,"y":0.2}
-#            font_size:35
-##            color: 1,1,1
-#            color: 0.2,0.37,0.47,1
-#            text:"Którą konsolę kupić? Quiz? \nQuestionnaire? Wtf is this"
-#
-#        Label:
-#            pos_hint:{"x":0.4,"y":0.86}
-#            size_hint:(0.2,0.15)
-#            font_size:35
-##            color: 1,1,1
-#            color: 0.2,0.37,0.47,1
-#            text:"Sugestator 3000"
 
         grid_layout_generic:
             Button:
@@ -102,7 +76,6 @@ WindowManager:
                 text:"Start"
                 on_press:
                     app.root.current = "main_screen"
-#                    root.manager.transition.direction = "left"
 
         grid_layout_settings:
             Button:
@@ -116,7 +89,6 @@ WindowManager:
                 on_press:
                     root.manager.last_screen = "welcome_screen"
                     app.root.current = "settings_screen"
-#                    root.manager.transition.direction = "down"
 
         grid_layout_fullscreen:
             Button:
@@ -370,13 +342,6 @@ WindowManager:
                 on_press:
                     root.confirm_answer()
 
-#        GridLayout:
-#            pos_hint:{"x":0.0,"y":0.6}
-#            size_hint:(0.3,0.15)
-#            cols:1
-#            Image:
-#                source: root.left_image_link
-#                size: self.texture_size
 
         GridLayout:
             pos_hint:{"x":0.0,'center_y': .5}
@@ -389,15 +354,6 @@ WindowManager:
                 font_size:40
                 color: 0.2,0.37,0.47,1
                 text: root.left_text
-
-#        GridLayout:
-#            pos_hint:{"x":0.7,"y":0.6}
-#            size_hint:(0.3,0.15)
-#            cols:1
-#            Image:
-#                size_hint:(1,0.6)
-#                source: root.right_image_link
-#                size: self.texture_size
 
         GridLayout:
             pos_hint:{"x":0.7,'center_y': .5}
@@ -463,14 +419,21 @@ WindowManager:
 
     FloatLayout:
         size: root.width, root.height
-#        Label:
-#            pos_hint:{"x":0,"y":0.2}
-#            font_size:35
-#            color: 1,1,1
-#            text:"PLACEHOLDER SETTINGS"
+        GridLayout:
+            pos_hint:{"x":0.3,"y":0.6}
+            size_hint:(0.4, 0.37)
+            cols:1
+            rows:2
+            padding:0
+            spacing:0
+            Label:
+                text_size: self.size
+                halign: 'center'
+                valign: 'top'
+                font_size:40
+                color: 0.2,0.37,0.47,1
+                text:"Settings"
 
-#        grid_layout_settings
-#        Why isn't it possible, WHY?
         GridLayout:
             pos_hint:{"x":0.895, "y":0.885}
             size_hint:(0.1, 0.1)
@@ -485,7 +448,6 @@ WindowManager:
                 background_down: root.manager.settings_icon_link
                 on_press:
                     app.root.current = root.manager.last_screen
-#                    root.manager.transition.direction = "up"
 
         grid_layout_fullscreen:
             Button:
@@ -592,7 +554,6 @@ WindowManager:
                 on_press:
                     root.manager.last_screen = "results_screen"
                     app.root.current = "settings_screen"
-#                    root.manager.transition.direction = "down"
 
         grid_layout_fullscreen:
             Button:
@@ -618,4 +579,3 @@ WindowManager:
                 background_down: root.manager.return_icon_link
                 on_press:
                     app.root.current = "welcome_screen"
-#                    root.manager.transition.direction = "right"
