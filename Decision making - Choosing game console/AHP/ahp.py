@@ -1,8 +1,12 @@
 from __future__ import annotations
 from functools import reduce
 from typing import Callable
+
+from numpy import linalg as LA
+import numpy as np
 import math
 import unittest
+
 
 MAX_COMPARISON_VALUE = 9
 Comparison_Matrix_type = dict[str, dict[str, float]]
@@ -47,13 +51,39 @@ class Alternative_comparison_builder(Comparison_builder):
         super().__init__(lambda matrix: model.add_alternatives_comparison_matrix(criterion, matrix), model.alternatives)
 
 class AHP_complete_model:
+    class Matrix_priority_calculator:
+        def calculate(self, matrix: Comparison_Matrix_type) -> dict[str, float]:
+            raise NotImplementedError()
+
+    class GMM_calculator(Matrix_priority_calculator):
+        def calculate(self, matrix: Comparison_Matrix_type) -> dict[str, float]:
+            gm_rows = {key:math.prod(values.values()) ** (1 / len(values)) for key, values in matrix.items()}
+            gm_rows_sum = sum(gm_rows.values())
+            return {key: value / gm_rows_sum for key, value in gm_rows.items()}
+
+    class EVM_calculator(Matrix_priority_calculator):        
+        def calculate(self, matrix: Comparison_Matrix_type) -> dict[str, float]:
+            np_arr = np.array([[value for value in values.values()] for values in matrix.values()])
+            eigenvalues, eigenvectors = LA.eig(np_arr)
+            max_eigenvector = eigenvectors[:, np.argmax(eigenvalues)]
+            w_max = {key: value for key, value in zip(matrix.keys(), max_eigenvector)}
+            w_max_sum = sum(w_max.values())
+            return {key: value / w_max_sum for key, value in w_max.items()}
+
+    class SimpleColumn_calculator(Matrix_priority_calculator):        
+        def calculate(self, matrix: Comparison_Matrix_type) -> dict[str, float]:
+            n = len(matrix)
+            return {key: sum(values.values()) / n for key, values in matrix.items()}
+
+    class SimpleScaledColumn_calculator(Matrix_priority_calculator):
+        def calculate(self, matrix: Comparison_Matrix_type) -> dict[str, float]:
+            row_sum = {key: sum(values.values()) for key, values in matrix.items()}
+            scaled = {key: {inner_key: value / row_sum[key] for inner_key, value in values.items()} for key, values in matrix.items()}
+            return {key: sum(values.values()) / len(values) for key, values in scaled.items()}
+    
+
     def __init__(self, model: AHP_model):
         self.model = model
-
-    def GMM(self, matrix: Comparison_Matrix_type) -> dict[str, float]:
-        gm_rows = {key:math.prod(values.values()) ** (1 / len(values)) for key, values in matrix.items()}
-        gm_rows_sum = sum(gm_rows.values())
-        return {key: value / gm_rows_sum for key, value in gm_rows.items()}
 
     def koczkoaj(self, criterion: str):
         alts = self.model.alternatives
@@ -72,16 +102,15 @@ class AHP_complete_model:
 
         return max(K.values())
 
-
-    def calculate(self):
+    def __calculate(self, calculator: AHP_complete_model.Matrix_priority_calculator) -> dict[str, float]:
         get_criteria_or_sub_criteria = lambda criterion: self.model.sub_criteria[criterion] if criterion in self.model.sub_criteria else [criterion]
         final_criterion_list = reduce(lambda acc, criterion: acc + get_criteria_or_sub_criteria(criterion), self.model.criteria, [])
-        alternatives_priorities = {criterion:self.GMM(self.model.alternatives_comparison_matrixes[criterion]) for criterion in final_criterion_list}
+        alternatives_priorities = {criterion:calculator.calculate(self.model.alternatives_comparison_matrixes[criterion]) for criterion in final_criterion_list}
         
         get_parent_criterion = lambda criterion: next((parent_criterion for parent_criterion in self.model.sub_criteria if criterion in self.model.sub_criteria[parent_criterion]), "")
 
-        criteria_priorities = self.GMM(self.model.criterion_comparison_matrix)
-        sub_criteria_priorities = {criterion:self.GMM(self.model.sub_criterion_comparison_matrixes[criterion]) for criterion in self.model.sub_criteria}
+        criteria_priorities = calculator.calculate(self.model.criterion_comparison_matrix)
+        sub_criteria_priorities = {criterion:calculator.calculate(self.model.sub_criterion_comparison_matrixes[criterion]) for criterion in self.model.sub_criteria}
 
         get_sub_criterion_priority = lambda sub_criterion: sub_criteria_priorities[get_parent_criterion(sub_criterion)][sub_criterion] * criteria_priorities[get_parent_criterion(sub_criterion)]
         get_criterion_priority = lambda criterion: criteria_priorities[criterion] if criterion in criteria_priorities else get_sub_criterion_priority(criterion)
@@ -91,6 +120,20 @@ class AHP_complete_model:
         )
 
         return {alternative:calculate_alternative_priority(alternative) for alternative in self.model.alternatives}
+
+
+    def calculate_gmm(self) -> dict[str, float]:
+        return self.__calculate(AHP_complete_model.GMM_calculator())
+
+    def calculate_evm(self) -> dict[str, float]:
+       return self.__calculate(AHP_complete_model.EVM_calculator())
+
+    def calculate_simple_column(self) -> dict[str, float]:
+        return self.__calculate(AHP_complete_model.SimpleColumn_calculator())
+
+    def calculate_simple_scaled_column(self) -> dict[str, float]:
+        return self.__calculate(AHP_complete_model.SimpleScaledColumn_calculator())
+
 
 class AHP_model:
     def __init__(self, criteria: list[str], sub_criteria: dict[str, list[str]],  alternatives: list[str]):
@@ -190,7 +233,7 @@ class TestAHP(unittest.TestCase):
             .compare("A", "B", 1)
             .build_criteria_comparison()
             .compare("X", "Y", 9)
-            .calculate()
+            .calculate_gmm()
         )
 
         self.assertGreater(ahp_result["A"], ahp_result["B"])
@@ -230,7 +273,7 @@ class TestAHP(unittest.TestCase):
             .compare("Education", "Age", 3)
             .compare("Charisma", "Education", 3)
             .compare("Charisma", "Age", 5)
-            .calculate()
+            .calculate_gmm()
         )
 
         ranking = [k for k, _ in sorted(ahp_result.items(), key=lambda item: item[1], reverse=True)]
@@ -256,7 +299,7 @@ class TestAHP(unittest.TestCase):
             .compare("X", "Y", 1)
             .build_sub_criteria_comparison("X")
             .compare("X1", "X2", 2)
-            .calculate()
+            .calculate_gmm()
         )
 
         self.assertGreater(ahp_result["A"], ahp_result["B"])
@@ -280,7 +323,18 @@ class TestAHP(unittest.TestCase):
 
         self.assertAlmostEqual(complete.koczkoaj("1"), 0.60059, 5)
 
-            
+    def test_evm(self):
+        matrix = {
+            "a": {"a": 1, "b": 2, "c": 3},
+            "b": {"a": 1/2, "b": 1, "c": 4},
+            "c": {"a": 1/3, "b": 1/4, "c": 1},
+        }
+        result = AHP_complete_model.EVM_calculator().calculate(matrix)
+        self.assertAlmostEqual(result["a"], 0.517, 2)
+        self.assertAlmostEqual(result["b"], 0.358, 2)
+        self.assertAlmostEqual(result["c"], 0.124, 2)
+        
+
 
 
 if __name__ == '__main__':
