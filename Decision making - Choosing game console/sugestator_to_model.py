@@ -100,17 +100,17 @@ class SugestatorToModel:
         return self.sub_criteria[criterion]
 
     def add_partial_comparision(self, first_alter: str, second_alter: str, criterion: str, value: int):
-        self.comparisions[criterion][first_alter][second_alter] = self.mapping_function(value)
-        self.comparisions[criterion][second_alter][first_alter] = self.mapping_function(-value)
+        self.comparisions[criterion][second_alter][first_alter] = self.mapping_function(value)
+        self.comparisions[criterion][first_alter][second_alter] = self.mapping_function(-value)
 
     def add_partial_cryteria_comparision(self, first_cryterion: str, second_cryterion: str, value: int):
         if self.is_main_criterion(first_cryterion) and self.is_main_criterion(second_cryterion):
-            self.criteria_comparisions[first_cryterion][second_cryterion] = self.mapping_function(value)
-            self.criteria_comparisions[second_cryterion][first_cryterion] = self.mapping_function(-value)
+            self.criteria_comparisions[second_cryterion][first_cryterion] = self.mapping_function(value)
+            self.criteria_comparisions[first_cryterion][second_cryterion] = self.mapping_function(-value)
         else:
             main_cryterion = self.get_main_criterion(first_cryterion)
-            self.sub_criteria_comparisions[main_cryterion][first_cryterion][second_cryterion] = self.mapping_function(value)
-            self.sub_criteria_comparisions[main_cryterion][second_cryterion][first_cryterion] = self.mapping_function(-value)
+            self.sub_criteria_comparisions[main_cryterion][second_cryterion][first_cryterion] = self.mapping_function(value)
+            self.sub_criteria_comparisions[main_cryterion][first_cryterion][second_cryterion] = self.mapping_function(-value)
 
     def is_main_criterion(self, criterion: str) -> bool:
         return criterion in self.criteria
@@ -121,8 +121,8 @@ class SugestatorToModel:
                 return main_criterion
 
     def add_partial_sub_cryteria_comparision(self, first_cryterion: str, second_cryterion: str, main_cryterion: str, value: int):
-        self.sub_criteria_comparisions[main_cryterion][first_cryterion][second_cryterion] = self.mapping_function(value)
-        self.sub_criteria_comparisions[main_cryterion][second_cryterion][first_cryterion] = self.mapping_function(-value)
+        self.sub_criteria_comparisions[main_cryterion][second_cryterion][first_cryterion] = self.mapping_function(value)
+        self.sub_criteria_comparisions[main_cryterion][first_cryterion][second_cryterion] = self.mapping_function(-value)
 
 if __name__ == '__main__':
     sugestator = SugestatorToModel('Data/alternatives.txt', 'Data/criteria.txt')

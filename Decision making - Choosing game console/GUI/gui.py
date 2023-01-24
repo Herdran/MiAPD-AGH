@@ -41,7 +41,7 @@ def mapping_function(val: int):
         case 1:
             return 4
         case 2:
-            return -9
+            return 9
 
 
 sugestator_to_model.set_mapping_function(mapping_function)
@@ -131,7 +131,7 @@ class CriteriaScreen(Screen):
 
 class ResultsScreen(Screen):
     def generate_result_view(self, complete_model):
-        results = complete_model.calculate()
+        results = complete_model.calculate_gmm() 
         results = dict(sorted(results.items(), key=lambda item: item[1], reverse=True))
 
         for key in results:
