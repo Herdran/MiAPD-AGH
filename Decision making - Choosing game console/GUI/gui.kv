@@ -33,6 +33,11 @@ WindowManager:
     size_hint: None, None
     size: dp(48), dp(48)
 
+<CheckSettings@MDCheckbox>:
+    group: 'group'
+    size_hint: None, None
+    size: dp(48), dp(48)
+
 <WelcomeScreen>
     name: "welcome_screen"
 
@@ -148,7 +153,6 @@ WindowManager:
             pos_hint: {'center_x': .5, 'center_y': .5}
             on_press:
                 root.set_curr_val(0)
-
         Check:
             pos_hint: {'center_x': .6, 'center_y': .5}
             on_press:
@@ -262,7 +266,7 @@ WindowManager:
                 background_down: root.manager.return_icon_link
                 on_press:
                     app.root.current = "welcome_screen"
-
+                    root.manager.reinitialize_model()
 <CriteriaScreen>
     name: "criteria_screen"
 
@@ -308,7 +312,6 @@ WindowManager:
             pos_hint: {'center_x': .5, 'center_y': .5}
             on_press:
                 root.set_curr_val(0)
-
         Check:
             pos_hint: {'center_x': .6, 'center_y': .5}
             on_press:
@@ -405,7 +408,7 @@ WindowManager:
                 background_down: root.manager.return_icon_link
                 on_press:
                     app.root.current = "welcome_screen"
-
+                    root.manager.reinitialize_model()
 
 <SettingsScreen>
     name: "settings_screen"
@@ -423,7 +426,7 @@ WindowManager:
             pos_hint:{"x":0.3,"y":0.6}
             size_hint:(0.4, 0.37)
             cols:1
-            rows:2
+            rows:1
             padding:0
             spacing:0
             Label:
@@ -433,6 +436,68 @@ WindowManager:
                 font_size:40
                 color: 0.2,0.37,0.47,1
                 text:"Settings"
+
+        CheckSettings:
+            pos_hint: {'center_x': .3, 'center_y': .75}
+            active: True
+            on_press:
+                root.manager.set_used_method(0)
+        CheckSettings:
+            pos_hint: {'center_x': .3, 'center_y': .6}
+            on_press:
+                root.manager.set_used_method(1)
+        CheckSettings:
+            pos_hint: {'center_x': .3, 'center_y': .45}
+            on_press:
+                root.manager.set_used_method(2)
+        CheckSettings:
+            pos_hint: {'center_x': .3, 'center_y': .3}
+            on_press:
+                root.manager.set_used_method(3)
+
+        Label:
+            size_hint: None, None
+            size: dp(48), dp(48)
+            pos_hint: {'center_x': .5, 'center_y': .75}
+#            text_size: self.size
+            halign: 'center'
+            valign: 'center'
+            font_size: 20
+            color: 0.2,0.37,0.47,1
+            text:"GMM"
+
+        Label:
+            size_hint: None, None
+            size: dp(48), dp(48)
+            pos_hint: {'center_x': .5, 'center_y': .6}
+#            text_size: self.size
+            halign: 'center'
+            valign: 'center'
+            font_size: 20
+            color: 0.2,0.37,0.47,1
+            text:"EVM"
+
+        Label:
+            size_hint: None, None
+#            size: dp(48), dp(48)
+            pos_hint: {'center_x': .5, 'center_y': .45}
+#            text_size: self.size
+            halign: 'center'
+            valign: 'center'
+            font_size: 20
+            color: 0.2,0.37,0.47,1
+            text:"Simple Column"
+
+        Label:
+            size_hint: None, None
+#            size: dp(48), dp(48)
+            pos_hint: {'center_x': .5, 'center_y': .3}
+#            text_size: self.size
+            halign: 'center'
+            valign: 'center'
+            font_size: 20
+            color: 0.2,0.37,0.47,1
+            text:"Simple Scaled Column"
 
         GridLayout:
             pos_hint:{"x":0.895, "y":0.885}
@@ -486,9 +551,9 @@ WindowManager:
                 text_size: self.size
                 halign: 'center'
                 valign: 'top'
-                font_size:40
+                font_size: 30
                 color: 0.2,0.37,0.47,1
-                text:"Results"
+                text:"Results for method: " + root.manager.used_method_name
 
         GridLayout:
             pos_hint:{"x":0.1,"y":0.70}
@@ -510,7 +575,7 @@ WindowManager:
                 valign: 'top'
                 font_size:25
                 color: 0.2,0.37,0.47,1
-                text:"Criteria"
+                text:"Koczkodaj index"
 
         GridLayout:
             pos_hint:{"x":0.1,"y":0.05}
@@ -579,3 +644,4 @@ WindowManager:
                 background_down: root.manager.return_icon_link
                 on_press:
                     app.root.current = "welcome_screen"
+                    root.manager.reinitialize_model()

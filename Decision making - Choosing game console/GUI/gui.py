@@ -17,7 +17,6 @@ file_path = str(pathlib.Path(__file__).parent.resolve())
 
 sugestator_to_model = SugestatorToModel(os.path.join("Data", "alternatives.txt"), os.path.join("Data", "criteria.txt"))
 
-ahp = sugestator_to_model.model
 alternatives = sugestator_to_model.alternatives
 criteria = sugestator_to_model.get_criteria_to_choose()
 
@@ -28,6 +27,8 @@ alternatives_images_links = {alternative: alternative.replace(" ", "_") + ".png"
 alternatives_combinations = list(itertools.combinations(alternatives, 2))
 
 criteria_and_subcriteria_combinations = sugestator_to_model.get_criteria_and_subcriteria_combinations()
+
+methods_parser = {0: "GMM", 1: "EVM", 2: "Simple Column", 3: "Simple Scaled Column"}
 
 
 def mapping_function(val: int):
@@ -130,20 +131,30 @@ class CriteriaScreen(Screen):
 
 
 class ResultsScreen(Screen):
+
     def generate_result_view(self, complete_model):
-        results = complete_model.calculate_gmm() 
+        results = self.calculate_result(complete_model)
         results = dict(sorted(results.items(), key=lambda item: item[1], reverse=True))
 
         for key in results:
             lbl = Label(text=key + "  ---  " + str(results[key]), size_hint_y=None, color=(0, 0, 0, 1))
             self.ids.left_scroll_view.add_widget(lbl)
 
-        sorted_koczkoaj = {criterion: complete_model.koczkoaj(criterion) for criterion in criteria}
-        sorted_koczkoaj = dict(sorted(sorted_koczkoaj.items(), key=lambda item: item[1], reverse=True))
-
-        for key in sorted_koczkoaj:
-            lbl2 = Label(text=key + "  ---  " + str(sorted_koczkoaj[key]), size_hint_y=None, color=(0, 0, 0, 1))
+        sorted_koczkodaj = {criterion: complete_model.koczkoaj(criterion) for criterion in criteria}
+        sorted_koczkodaj = dict(sorted(sorted_koczkodaj.items(), key=lambda item: item[1], reverse=True))
+        for key in sorted_koczkodaj:
+            lbl2 = Label(text=key + "  ---  " + str(sorted_koczkodaj[key]), size_hint_y=None, color=(0, 0, 0, 1))
             self.ids.right_scroll_view.add_widget(lbl2)
+
+    def calculate_result(self, complete_model):
+        if self.manager.used_method == 0:
+            return complete_model.calculate_gmm()
+        if self.manager.used_method == 1:
+            return complete_model.calculate_evm()
+        if self.manager.used_method == 2:
+            return complete_model.calculate_simple_column()
+        if self.manager.used_method == 3:
+            return complete_model.calculate_simple_scaled_column()
 
 
 class WindowManager(ScreenManager):
@@ -152,6 +163,8 @@ class WindowManager(ScreenManager):
     return_icon_link = StringProperty(os.path.join(images_path, "return.png"))
     skip_icon_link = StringProperty(os.path.join(images_path, "next.png"))
     last_screen = "welcome_screen"
+    used_method = 0                             # defaults to GMM
+    used_method_name = StringProperty("GMM")    # defaults to GMM
 
     def screen_mode_change(self):
         if Window.fullscreen:
@@ -160,6 +173,15 @@ class WindowManager(ScreenManager):
         else:
             Window.fullscreen = "auto"
             self.screen_mode_change_image_link = os.path.join(images_path, "fullscreen_minimalize.png")
+
+    def set_used_method(self, var):
+        self.used_method = var
+        self.used_method_name = methods_parser[var]
+
+    def reinitialize_model(self):
+        sugestator_to_model.reset()
+        self.get_screen('results_screen').ids.left_scroll_view.clear_widgets()
+        self.get_screen('results_screen').ids.right_scroll_view.clear_widgets()
 
 
 class Gui(MDApp):
