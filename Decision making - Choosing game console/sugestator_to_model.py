@@ -9,11 +9,13 @@ class SugestatorToModel:
         self.load_alternatives(alternatives_path)
         self.load_criteria(criteria_path)
         self.build_model()
+        self.mapping_function = lambda x: x
+        self.reset()
+
+    def reset(self):
         self.comparisions = {c:{a:{b:None for b in self.alternatives} for a in self.alternatives} for c in self.get_criteria_to_choose()}
         self.criteria_comparisions = {a:{b:None for b in self.criteria} for a in self.criteria}
         self.sub_criteria_comparisions = {crit:{a:{b:None for b in self.sub_criteria[crit]} for a in self.sub_criteria[crit]} for crit in self.sub_criteria.keys()}
-        self.mapping_function = lambda x: x
-
 
     def load_alternatives(self, path: os.path):
         self.alternatives = []

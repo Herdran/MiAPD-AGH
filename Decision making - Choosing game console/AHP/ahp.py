@@ -134,6 +134,7 @@ class AHP_complete_model:
     def calculate_simple_scaled_column(self) -> dict[str, float]:
         return self.__calculate(AHP_complete_model.SimpleScaledColumn_calculator())
 
+    
 
 class AHP_model:
     def __init__(self, criteria: list[str], sub_criteria: dict[str, list[str]],  alternatives: list[str]):
